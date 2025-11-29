@@ -19,84 +19,6 @@
   <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
 
 </head>
-<script>
-document.getElementById("contact-form").addEventListener("submit", async function (e) {
-  e.preventDefault();
-
-  let valid = true;
-
-  // Input values
-  const name = document.getElementById("name");
-  const email = document.getElementById("email");
-  const message = document.getElementById("message");
-
-  // Error labels
-  const nameErr = document.getElementById("name-error");
-  const emailErr = document.getElementById("email-error");
-  const msgErr = document.getElementById("message-error");
-
-  // Reset errors
-  nameErr.textContent = "";
-  emailErr.textContent = "";
-  msgErr.textContent = "";
-
-  // Validation
-  if (name.value.trim() === "") {
-    nameErr.textContent = "Name is required.";
-    valid = false;
-  }
-
-  const emailPattern = /^[^ ]+@[^ ]+\.[a-z]{2,3}$/;
-  if (!email.value.match(emailPattern)) {
-    emailErr.textContent = "Enter a valid email.";
-    valid = false;
-  }
-
-  if (message.value.trim() === "") {
-    msgErr.textContent = "Message cannot be empty.";
-    valid = false;
-  }
-
-  if (!valid) return;
-
-  // Show loading animation
-  const sendBtn = document.getElementById("send-btn");
-  const loader = sendBtn.querySelector(".loader");
-  const btnText = sendBtn.querySelector(".btn-text");
-
-  btnText.style.display = "none";
-  loader.style.display = "inline-block";
-
-  // Submit form (Formspree backend email)
-  const response = await fetch(e.target.action, {
-    method: "POST",
-    body: new FormData(e.target),
-    headers: { "Accept": "application/json" }
-  });
-
-  // Hide loader
-  btnText.style.display = "inline";
-  loader.style.display = "none";
-
-  if (response.ok) {
-    // Reset form
-    e.target.reset();
-
-    // Show popup
-    const popup = document.getElementById("success-popup");
-    popup.classList.add("show");
-
-  } else {
-    alert("Something went wrong! Please try again.");
-  }
-});
-
-// Close popup
-document.getElementById("close-popup").addEventListener("click", () => {
-  document.getElementById("success-popup").classList.remove("show");
-});
-</script>
-
 <body>
 
   <!-- Particles background -->
@@ -261,8 +183,82 @@ document.getElementById("close-popup").addEventListener("click", () => {
 
   <script src="assets/js/particles-config.js"></script>
   <script src="assets/js/main.js"></script>
+
+  <script>
+document.getElementById("contact-form").addEventListener("submit", async function (e) {
+  e.preventDefault();
+
+  let valid = true;
+
+  // Input values
+  const name = document.getElementById("name");
+  const email = document.getElementById("email");
+  const message = document.getElementById("message");
+
+  // Error labels
+  const nameErr = document.getElementById("name-error");
+  const emailErr = document.getElementById("email-error");
+  const msgErr = document.getElementById("message-error");
+
+  // Reset errors
+  nameErr.textContent = "";
+  emailErr.textContent = "";
+  msgErr.textContent = "";
+
+  // Validation
+  if (name.value.trim() === "") {
+    nameErr.textContent = "Name is required.";
+    valid = false;
+  }
+
+  const emailPattern = /^[^ ]+@[^ ]+\.[a-z]{2,3}$/;
+  if (!email.value.match(emailPattern)) {
+    emailErr.textContent = "Enter a valid email.";
+    valid = false;
+  }
+
+  if (message.value.trim() === "") {
+    msgErr.textContent = "Message cannot be empty.";
+    valid = false;
+  }
+
+  if (!valid) return;
+
+  // Show loading animation
+  const sendBtn = document.getElementById("send-btn");
+  const loader = sendBtn.querySelector(".loader");
+  const btnText = sendBtn.querySelector(".btn-text");
+
+  btnText.style.display = "none";
+  loader.style.display = "inline-block";
+
+  // Submit form (Formspree backend email)
+  const response = await fetch(e.target.action, {
+    method: "POST",
+    body: new FormData(e.target),
+    headers: { "Accept": "application/json" }
+  });
+
+  btnText.style.display = "inline";
+  loader.style.display = "none";
+
+  if (response.ok) {
+    e.target.reset();
+    document.getElementById("success-popup").classList.add("show");
+  } else {
+    alert("Something went wrong! Please try again.");
+  }
+});
+
+// Close popup
+document.getElementById("close-popup").addEventListener("click", () => {
+  document.getElementById("success-popup").classList.remove("show");
+});
+</script>
+
 </body>
 </html>
+
 
 
 
