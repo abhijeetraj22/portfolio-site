@@ -19,6 +19,84 @@
   <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
 
 </head>
+<script>
+document.getElementById("contact-form").addEventListener("submit", async function (e) {
+  e.preventDefault();
+
+  let valid = true;
+
+  // Input values
+  const name = document.getElementById("name");
+  const email = document.getElementById("email");
+  const message = document.getElementById("message");
+
+  // Error labels
+  const nameErr = document.getElementById("name-error");
+  const emailErr = document.getElementById("email-error");
+  const msgErr = document.getElementById("message-error");
+
+  // Reset errors
+  nameErr.textContent = "";
+  emailErr.textContent = "";
+  msgErr.textContent = "";
+
+  // Validation
+  if (name.value.trim() === "") {
+    nameErr.textContent = "Name is required.";
+    valid = false;
+  }
+
+  const emailPattern = /^[^ ]+@[^ ]+\.[a-z]{2,3}$/;
+  if (!email.value.match(emailPattern)) {
+    emailErr.textContent = "Enter a valid email.";
+    valid = false;
+  }
+
+  if (message.value.trim() === "") {
+    msgErr.textContent = "Message cannot be empty.";
+    valid = false;
+  }
+
+  if (!valid) return;
+
+  // Show loading animation
+  const sendBtn = document.getElementById("send-btn");
+  const loader = sendBtn.querySelector(".loader");
+  const btnText = sendBtn.querySelector(".btn-text");
+
+  btnText.style.display = "none";
+  loader.style.display = "inline-block";
+
+  // Submit form (Formspree backend email)
+  const response = await fetch(e.target.action, {
+    method: "POST",
+    body: new FormData(e.target),
+    headers: { "Accept": "application/json" }
+  });
+
+  // Hide loader
+  btnText.style.display = "inline";
+  loader.style.display = "none";
+
+  if (response.ok) {
+    // Reset form
+    e.target.reset();
+
+    // Show popup
+    const popup = document.getElementById("success-popup");
+    popup.classList.add("show");
+
+  } else {
+    alert("Something went wrong! Please try again.");
+  }
+});
+
+// Close popup
+document.getElementById("close-popup").addEventListener("click", () => {
+  document.getElementById("success-popup").classList.remove("show");
+});
+</script>
+
 <body>
 
   <!-- Particles background -->
@@ -137,19 +215,42 @@
         <h3>Message me</h3>
 
         <!-- Contact form: uses Formspree. Replace action with your form endpoint -->
-        <form id="contact-form" action="https://formspree.io/f/<YOUR_FORM_ID>" method="POST">
+        <form id="contact-form" action="https://formspree.io/f/<YOUR_FORM_ID>" method="POST" novalidate>
+        
           <label>
-            <input type="text" name="name" placeholder="Your name" required>
+            <input type="text" id="name" name="name" placeholder="Your name" required>
+            <span class="error" id="name-error"></span>
           </label>
+        
           <label>
-            <input type="email" name="email" placeholder="Your email" required>
+            <input type="email" id="email" name="email" placeholder="Your email" required>
+            <span class="error" id="email-error"></span>
           </label>
+        
           <label>
-            <textarea name="message" placeholder="Your message" rows="5" required></textarea>
+            <textarea id="message" name="message" placeholder="Your message" rows="5" required></textarea>
+            <span class="error" id="message-error"></span>
           </label>
-          <button class="btn" type="submit">Send message</button>
-          <p class="muted">Or email me directly at <a href="mailto:abhijeetraj22@gmail.com">abhijeetraj22@gmail.com</a></p>
+        
+          <button id="send-btn" class="btn" type="submit">
+            <span class="btn-text">Send message</span>
+            <span class="loader"></span>
+          </button>
+        
+          <p class="muted">Or email me directly at 
+            <a href="mailto:abhijeetraj22@gmail.com">abhijeetraj22@gmail.com</a>
+          </p>
         </form>
+        
+        <!-- SUCCESS POPUP -->
+        <div id="success-popup" class="popup hidden">
+          <div class="popup-content">
+            <h3>Message Sent 🎉</h3>
+            <p>Thank you! I’ll get back to you soon.</p>
+            <button class="btn" id="close-popup">Close</button>
+          </div>
+        </div>
+
       </div>
     </div>
   </section>
@@ -162,4 +263,5 @@
   <script src="assets/js/main.js"></script>
 </body>
 </html>
+
 
